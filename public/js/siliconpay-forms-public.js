@@ -278,6 +278,39 @@ function StartSiliconPay() {
       calculateTotal();
       calculateFees();
     });
+
+    function showSiliconPayModal(params) {
+      console.log("params", params);
+      // Get the modal
+      var modal = document.getElementById("SPModal");
+
+      // Get the button that opens the modal
+      const btn = document.getElementById("myBtn");
+
+      // Get the <span> element that closes the modal
+      const span = document.getElementsByClassName("close")[0];
+
+      $("#silicon-pay-main-text").text(params.title);
+      
+      $("#silicon-pay-main-text-2").text(params.message);
+
+      // When the user clicks the button, open the modal
+
+      modal.style.display = "block";
+
+      // When the user clicks on <span> (x), close the modal
+      span.onclick = function () {
+        modal.style.display = "none";
+      };
+
+      // When the user clicks anywhere outside of the modal, close it
+      window.onclick = function (event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      };
+    }
+
     /**
      * @function validateEmail
      * @param {*} email
@@ -474,12 +507,14 @@ function StartSiliconPay() {
                 {
                   action: "spg_wp_siliconpay_confirm_payment",
                   code: txt_code,
-                  status_code: response.code,
+                  status_code: response.code ? response.code : 201,
                   status: response.status,
                   customer_code: customer_code,
                   reference: response.txRef,
                   amount: amount,
                   quantity: quantity,
+                  payment_link: response.link ? response.link : "null",
+                  title: response.message ? response.message : "Unknown Error!",
                 },
                 function (newdata) {
                   data = JSON.parse(newdata);
@@ -501,7 +536,7 @@ function StartSiliconPay() {
                     self.before(
                       '<div class="alert-success">' + data.message + "</div>"
                     );
-                    $.blockUI({ message: data.message });
+
                     $(this)
                       .find("input, select, textarea")
                       .each(function () {
@@ -512,184 +547,29 @@ function StartSiliconPay() {
                       });
                     $(".pf-txncharge").hide().html("UGX0").show().digits();
                     $(".pf-txntotal").hide().html("UGX0").show().digits();
-
+                    showSiliconPayModal({
+                      title: data.title,
+                      message: data.message,
+                    });
                     $.unblockUI();
+                    setTimeout(() => {
+                      if (data.payment_link !== null) {
+                        window.location.href = data.payment_link;
+                      }
+                    }, 10000);
                   } else {
-                    $.blockUI({ message: data.message });
                     self.before(
                       '<div class="alert-danger">' + data.message + "</div>"
                     );
+                    showSiliconPayModal({
+                      title: data.title,
+                      message: data.message,
+                    });
                     $.unblockUI();
                   }
                 }
               );
             });
-          } else {
-            alert(data.message);
-          }
-        },
-      });
-    });
-
-    $(".retry-form").on("submit", function (e) {
-      var self = $(this);
-      var $form = $(this);
-      e.preventDefault();
-
-      $.blockUI({ message: "Please wait..." });
-
-      var formdata = new FormData(this);
-
-      $.ajax({
-        url: $form.attr("action"),
-        type: "POST",
-        data: formdata,
-        mimeTypes: "multipart/form-data",
-        contentType: false,
-        cache: false,
-        processData: false,
-        dataType: "JSON",
-        success: function (data) {
-          data.custom_fields.push({
-            display_name: "Plugin",
-            variable_name: "plugin",
-            value: "spg-siliconpay",
-          });
-          $.unblockUI();
-          if (data.result == "success") {
-            var names = data.name.split(" ");
-            var firstName = names[0] || "";
-            var lastName = names[1] || "";
-            var quantity = data.quantity;
-            // console.log(firstName+ " - "+lastName);
-            if (data.plan == "none" || data.plan == "" || data.plan == "no") {
-              var handler = PaystackPop.setup({
-                key: spg_settings.key,
-                email: data.email,
-                amount: data.total,
-                firstname: firstName,
-                lastname: lastName,
-                ref: data.code,
-                currency: data.currency,
-                subaccount: data.subaccount,
-                bearer: data.txnbearer,
-                transaction_charge: data.transaction_charge,
-                metadata: { custom_fields: data.custom_fields },
-                callback: function (response) {
-                  $.blockUI({ message: "Please wait..." });
-                  $.post(
-                    $form.attr("action"),
-                    {
-                      action: "spg_wp_siliconpay_rconfirm_payment",
-                      code: response.trxref,
-                      quantity: quantity,
-                    },
-                    function (newdata) {
-                      data = JSON.parse(newdata);
-                      if (data.result == "success2") {
-                        window.location.href = data.link;
-                      }
-                      if (data.result == "success") {
-                        $(".retry-form")[0].reset();
-                        $("html,body").animate(
-                          { scrollTop: $(".retry-form").offset().top - 110 },
-                          500
-                        );
-
-                        self.before(
-                          '<div class="alert-success">' +
-                            data.message +
-                            "</div>"
-                        );
-                        $(this)
-                          .find("input, select, textarea")
-                          .each(function () {
-                            $(this).css({
-                              "border-color": "#d1d1d1",
-                              "background-color": "#fff",
-                            });
-                          });
-                        $(".pf-txncharge").hide().html("UGX0").show().digits();
-                        $(".pf-txntotal").hide().html("UGX0").show().digits();
-                        $("#submitbtn").remove();
-                        $.unblockUI();
-                      } else {
-                        self.before(
-                          '<div class="alert-success">' +
-                            data.message +
-                            "</div>"
-                        );
-                        $.unblockUI();
-                      }
-                    }
-                  );
-                },
-                onClose: function () {},
-              });
-            } else {
-              var handler = PaystackPop.setup({
-                key: spg_settings.key,
-                email: data.email,
-                plan: data.plan,
-                firstname: firstName,
-                lastname: lastName,
-                ref: data.code,
-                currency: data.currency,
-                subaccount: data.subaccount,
-                bearer: data.txnbearer,
-                transaction_charge: data.transaction_charge,
-                metadata: { custom_fields: data.custom_fields },
-                callback: function (response) {
-                  $.blockUI({ message: "Please wait..." });
-                  $.post(
-                    $form.attr("action"),
-                    {
-                      action: "spg_wp_siliconpay_rconfirm_payment",
-                      code: response.trxref,
-                    },
-                    function (newdata) {
-                      data = JSON.parse(newdata);
-                      if (data.result == "success2") {
-                        window.location.href = data.link;
-                      }
-                      if (data.result == "success") {
-                        $(".retry-form")[0].reset();
-                        $("html,body").animate(
-                          { scrollTop: $(".retry-form").offset().top - 110 },
-                          500
-                        );
-
-                        self.before(
-                          '<div class="alert-success">' +
-                            data.message +
-                            "</div>"
-                        );
-                        $(this)
-                          .find("input, select, textarea")
-                          .each(function () {
-                            $(this).css({
-                              "border-color": "#d1d1d1",
-                              "background-color": "#fff",
-                            });
-                          });
-                        $(".pf-txncharge").hide().html("UGX0").show().digits();
-                        $(".pf-txntotal").hide().html("UGX0").show().digits();
-                        $("#submitbtn").remove();
-                        $.unblockUI();
-                      } else {
-                        self.before(
-                          '<div class="alert-danger">' + data.message + "</div>"
-                        );
-                        $.unblockUI();
-                      }
-                    }
-                  );
-                },
-                onClose: function () {},
-              });
-            }
-
-            handler.openIframe();
           } else {
             alert(data.message);
           }
