@@ -330,7 +330,7 @@ class Spg_WP_SiliconPay_Admin
                 $paybtn = 'Pay';
             }
             if ($successmsg == "") {
-                $successmsg = 'Thank you for paying!';
+                $successmsg = 'Thank you for initiating payment!';
             }
             if ($currency == "") {
                 $currency = 'UGX';
@@ -419,7 +419,7 @@ class Spg_WP_SiliconPay_Admin
             $sendinvoice = get_post_meta($post->ID, '_sendinvoice', true);
 
             if ($subject == "") {
-                $subject = 'Thank you for your payment';
+                $subject = 'Thank you for initiating your payment';
             }
             if ($sendreceipt == "") {
                 $sendreceipt = 'yes';
@@ -428,10 +428,10 @@ class Spg_WP_SiliconPay_Admin
                 $sendinvoice = 'yes';
             }
             if ($heading == "") {
-                $heading = "We've received your payment";
+                $heading = "We've received your payment initiation on our platform";
             }
             if ($message == "") {
-                $message = 'Your payment was received and we appreciate it.';
+                $message = 'Your payment initiation is acknowledged and we appreciate it.';
             }
             // Echo out the field
             echo '<p>Send an invoices when a payment is attempted:</p>';
