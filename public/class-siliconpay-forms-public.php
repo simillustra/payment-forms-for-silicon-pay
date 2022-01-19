@@ -19,6 +19,7 @@ class Spg_WP_SiliconPay_Public
 
     public function enqueue_styles()
     {
+        wp_enqueue_style($this->plugin_name . '0', 'https://fonts.googleapis.com/css?family=Open+Sans:400,600&display=swap', false );
         wp_enqueue_style($this->plugin_name . '1', plugin_dir_url(__FILE__) . 'css/spg-siliconpay-style.css', array(), $this->version, 'all');
         wp_enqueue_style($this->plugin_name . '2', plugin_dir_url(__FILE__) . 'css/font-awesome.min.css', array(), $this->version, 'all');
 
@@ -34,6 +35,8 @@ class Spg_WP_SiliconPay_Public
         }
         return $key;
     }
+
+
 
     public static function fetchFeeSettings()
     {
@@ -155,6 +158,11 @@ function spg_wp_siliconpay_mail_from_name()
     return $name;
 }
 
+function spg_wp_add_google_fonts() {
+    wp_enqueue_style( 'spg_wp_pay-google-fonts', 'http://fonts.googleapis.com/css?family=Noto+Sans:400,700&display=swap', false );
+}
+
+
 
 function spg_wp_siliconpay_send_invoice($currency, $amount, $name, $email, $code)
 {
@@ -176,8 +184,8 @@ function spg_wp_siliconpay_send_invoice($currency, $amount, $name, $email, $code
         <meta name="format-detection" content="address=no">
         <meta name="format-detection" content="email=no">
         <title></title>
-        <link href="http://fonts.googleapis.com/css?family=Noto+Sans:400,700" rel="stylesheet" type="text/css">
-        <style type="text/css">
+        <?php echo add_action( 'wp_enqueue_scripts', 'spg_wp_add_google_fonts' ); ?>
+         <style type="text/css">
             body {
                 Margin: 0;
                 padding: 0;
@@ -1008,7 +1016,7 @@ function spg_wp_siliconpay_send_receipt($id, $currency, $amount, $name, $email, 
         <meta name="format-detection" content="address=no">
         <meta name="format-detection" content="email=no">
         <title></title>
-        <link href="http://fonts.googleapis.com/css?family=Noto+Sans:400,700" rel="stylesheet" type="text/css">
+        <?php echo add_action( 'wp_enqueue_scripts', 'spg_wp_add_google_fonts' ); ?>
         <style type="text/css">
             body {
                 Margin: 0;
@@ -1838,7 +1846,7 @@ function spg_wp_siliconpay_send_receipt_owner($id, $currency, $amount, $name, $e
         <meta name="format-detection" content="address=no">
         <meta name="format-detection" content="email=no">
         <title></title>
-        <link href="http://fonts.googleapis.com/css?family=Noto+Sans:400,700" rel="stylesheet" type="text/css">
+        <?php echo add_action( 'wp_enqueue_scripts', 'spg_wp_add_google_fonts' ); ?>
         <style type="text/css">
             body {
                 Margin: 0;
@@ -3301,7 +3309,7 @@ function spg_wp_siliconpay_submit_action()
     $code = spg_wp_siliconpay_generate_code();
 
     $table = $wpdb->prefix . SPG_WP_SILICONPAY_TABLE;
-    $metadata = $_POST;
+    $metadata = sanitize_post($_POST);
     $fullname = sanitize_text_field($_POST['pf-fname']);
     $recur = sanitize_text_field($_POST['pf-recur']);
     unset($metadata['action']);
@@ -3411,13 +3419,13 @@ function spg_wp_siliconpay_submit_action()
     $fixedmetadata = array_merge($untouchedmetadata, $fixedmetadata);
 
     $insert = array(
-        'post_id' => strip_tags($_POST["pf-id"], ""),
-        'email' => strip_tags($_POST["pf-pemail"], ""),
-        'phone' => strip_tags($_POST["pf-phone"], ""),
-        'method' => strip_tags($_POST["pf-method"], ""),
-        'user_id' => strip_tags($_POST["pf-user_id"], ""),
-        'amount' => strip_tags($amount, ""),
-        'plan' => strip_tags($plancode, ""),
+        'post_id' => sanitize_text_field($_POST["pf-id"], ""),
+        'email' => sanitize_text_field($_POST["pf-pemail"], ""),
+        'phone' => sanitize_text_field($_POST["pf-phone"], ""),
+        'method' => sanitize_text_field($_POST["pf-method"], ""),
+        'user_id' => sanitize_text_field($_POST["pf-user_id"], ""),
+        'amount' => sanitize_text_field($amount, ""),
+        'plan' => sanitize_text_field($plancode, ""),
         'ip' => spg_wp_siliconpay_get_the_user_ip(),
         'txn_code' => $code,
         'metadata' => json_encode($fixedmetadata)

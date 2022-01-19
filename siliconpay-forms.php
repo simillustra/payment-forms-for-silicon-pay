@@ -18,7 +18,7 @@ define('SPG_WP_SILICONPAY_MAIN_FILE', __FILE__);
 define('SPG_WP_SILICONPAY_VERSION', '1.0');
 define('SPG_WP_SILICONPAY_TABLE', 'siliconpay_forms_payments');
 
-define('KKD_PFF_PLUGIN_BASENAME', plugin_basename(__FILE__));
+define('SPG_PAYMENT_PLUGIN_BASENAME', plugin_basename(__FILE__));
 
 // fix some badly enqueued scripts with no sense of HTTPS
 add_action('wp_print_scripts', 'spg_wp_siliconpay_enqueueScriptsFix', 100);

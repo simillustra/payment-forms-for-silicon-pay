@@ -190,7 +190,7 @@ class Spg_WP_SiliconPay
 
         // Add Settings link to the plugin
         $this->loader->add_filter(
-            'plugin_action_links_' . KKD_PFF_PLUGIN_BASENAME,
+            'plugin_action_links_' . SPG_PAYMENT_PLUGIN_BASENAME,
             $plugin_admin,
             'add_action_links'
         );

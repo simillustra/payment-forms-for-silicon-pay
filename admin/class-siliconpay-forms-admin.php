@@ -251,7 +251,7 @@ class Spg_WP_SiliconPay_Admin
                     $count_query = 'SELECT COUNT(*) FROM ' . $table . ' WHERE post_id = "' . $post_id . '" AND paid = "1"';
                     $num = $wpdb->get_var($count_query);
 
-                    echo '<u><a href="' . admin_url('admin.php?page=submissions&form=' . $post_id) . '">' . $num . '</a></u>';
+                    echo '<u><a href="' . admin_url('admin.php?page=submissions&form=' . esc_attr($post_id)) . '">' . esc_attr($num) . '</a></u>';
                     break;
                 default:
                     break;
@@ -309,7 +309,7 @@ class Spg_WP_SiliconPay_Admin
                 <span class="shortcode wp-ui-highlight">
                     <input type="text" id="wpcf7-shortcode" onfocus="this.select();" readonly="readonly"
                            class="large-text code"
-                           value="[spg-siliconpay id=&quot;<?php echo $post->ID; ?>&quot;]"></span>
+                           value="[spg-siliconpay id=&quot;<?php echo esc_attr($post->ID); ?>&quot;]"></span>
             </p>
 
             <?php
@@ -398,21 +398,21 @@ class Spg_WP_SiliconPay_Admin
 				  </select>';
             echo '<small>Ensure you are activated for the currency you are selecting. Check <a href="https://silicon-pay.com/#mobile_money" target="_blank">here</a> for more information.</small>';
             echo '<p>Amount to be paid(Set 0 for customer input):</p>';
-            echo '<input type="number" name="_amount" value="' . $amount . '" class="widefat pf-number" />';
+            echo '<input type="number" name="_amount" value="' . esc_attr($amount) . '" class="widefat pf-number" />';
             if ($minimum == 1) {
                 echo '<br><label><input name="_minimum" type="checkbox" value="1" checked> Make amount minimum payable </label>';
             } else {
                 echo '<br><label><input name="_minimum" type="checkbox" value="1"> Make amount minimum payable </label>';
             }
             echo '<p>Variable Dropdown Amount:<code><label>Format(option:amount):  Option 1:10000,Option 2:3000 Separate options with "," </code></label></p>';
-            echo '<input type="text" name="_variableamount" value="' . $variableamount . '" class="widefat " />';
+            echo '<input type="text" name="_variableamount" value="' . esc_attr($variableamount) . '" class="widefat " />';
             if ($usevariableamount == 1) {
                 echo '<br><label><input name="_usevariableamount" type="checkbox" value="1" checked> Use dropdown amount option </label>';
             } else {
                 echo '<br><label><input name="_usevariableamount" type="checkbox" value="1" > Use dropdown amount option </label>';
             }
             echo '<p>Pay button Description:</p>';
-            echo '<input type="text" name="_paybtn" value="' . $paybtn . '" class="widefat" />';
+            echo '<input type="text" name="_paybtn" value="' . esc_attr($paybtn) . '" class="widefat" />';
             echo '<p>Add Extra Charge:</p>';
             echo '<select class="form-control" name="_txncharge" id="parent_id" style="width:100%;">
 								<option value="merchant"' . spg_wp_siliconpay_txncheck('merchant', $txncharge) . '>No, do not add</option>
@@ -804,7 +804,7 @@ function spg_wp_siliconpay_register_newpage()
 
 function spg_wp_siliconpay_payment_submissions()
 {
-    $id = $_GET['form'];
+    $id = sanitize_text_field($_GET['form']);
     $obj = get_post($id);
     if ($obj->post_type == 'siliconpay_form') {
         $amount = get_post_meta($id, '_amount', true);
@@ -854,7 +854,7 @@ function Spg_wp_export_excel()
 {
     global $wpdb;
 
-    $post_id = $_POST['form_id'];
+    $post_id = sanitize_text_field($_POST['form_id']);
     $obj = get_post($post_id);
     $csv_output = "";
     $currency = get_post_meta($post_id, '_currency', true);
@@ -985,7 +985,7 @@ class Spg_WP_SiliconPay_Payments_List_Table extends WP_List_Table
 {
     public function prepare_items()
     {
-        $post_id = $_GET['form'];
+        $post_id = sanitize_text_field($_GET['form']);
         $currency = get_post_meta($post_id, '_currency', true);
 
         global $wpdb;
@@ -1103,10 +1103,10 @@ class Spg_WP_SiliconPay_Payments_List_Table extends WP_List_Table
         $orderby = 'date';
         $order = 'desc';
         if (!empty($_GET['orderby'])) {
-            $orderby = $_GET['orderby'];
+            $orderby = sanitize_text_field($_GET['orderby']);
         }
         if (!empty($_GET['order'])) {
-            $order = $_GET['order'];
+            $order = sanitize_text_field($_GET['order']);
         }
         $result = strcmp($a[$orderby], $b[$orderby]);
         if ($order === 'asc') {

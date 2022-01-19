@@ -1,7 +1,15 @@
 <?php
 // $parse_uri = explode( 'wp-content', $_SERVER['SCRIPT_FILENAME'] );
 // require_once( $parse_uri[0] . 'wp-load.php' );
-require_once ABSPATH . 'wp-load.php';
+function silicon_pay_full_load_path_page() {
+    require_once ABSPATH . 'wp-load.php';
+    die(); // this is required to return a proper result
+}
+add_action( 'silicon_pay_wp_ajax_load_invoice_page', 'silicon_pay_full_load_path_page' );
+add_action( 'silicon_pay_wp_ajax_nopriv_load_invoice_page', 'silicon_pay_full_load_path_page' );
+
+
+
 
 $code = @$_GET['code'];
 function spgformat_metadata($data)
