@@ -3560,9 +3560,11 @@ function spg_wp_siliconpay_confirm_payment()
 
     global $wpdb;
     $table = $wpdb->prefix . SPG_WP_SILICONPAY_TABLE;
-    $code = $_POST['code'];
+    $code = sanitize_text_field($_POST['code']);
 
     $record = $wpdb->get_results("SELECT * FROM $table WHERE (txn_code = '" . $code . "')");
+
+//    $record = $wpdb->get_results($wpdb->prepare("SELECT * FROM $table WHERE txn_code=%d", $code));
 
     if (array_key_exists("0", $record)) {
         $payment_array = $record[0];
