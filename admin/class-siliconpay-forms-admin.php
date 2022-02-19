@@ -477,13 +477,13 @@ class Spg_WP_SiliconPay_Admin
 							<option value="yes" ' . spg_wp_siliconpay_txncheck('yes', $sendreceipt) . '>Send</option>
 						</select>';
             echo '<p>Email Subject:</p>';
-            echo '<input type="text" name="_subject" value="' . $subject . '" class="widefat" />';
+            echo '<input type="text" name="_subject" value="' . esc_attr($subject) . '" class="widefat" />';
             echo '<p>Merchant Name on Receipt:</p>';
-            echo '<input type="text" name="_merchant" value="' . $merchant . '" class="widefat" />';
+            echo '<input type="text" name="_merchant" value="' . esc_attr($merchant) . '" class="widefat" />';
             echo '<p>Email Heading:</p>';
-            echo '<input type="text" name="_heading" value="' . $heading . '" class="widefat" />';
+            echo '<input type="text" name="_heading" value="' . esc_attr($heading) . '" class="widefat" />';
             echo '<p>Email Body/Message:</p>';
-            echo '<textarea rows="6"  name="_message"  class="widefat" >' . $message . '</textarea>';
+            echo '<textarea rows="6"  name="_message"  class="widefat" >' . esc_attr($message) . '</textarea>';
         }
 
         function spg_wp_siliconpay_editor_add_recur_data()

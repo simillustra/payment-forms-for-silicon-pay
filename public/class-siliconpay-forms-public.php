@@ -1631,13 +1631,13 @@ function spg_wp_siliconpay_send_receipt($id, $currency, $amount, $name, $email, 
                                                 &nbsp; </p>
                                             <h5
                                                     style="font-family:Helvetica,Arial,sans-serif;margin-left:0;margin-right:0;margin-top:16px;margin-bottom:8px;padding:0;font-size:18px;line-height:26px;font-weight:bold;color:#383d42">
-                                                <?php echo $heading; ?></h5>
+                                                <?php echo esc_attr($heading); ?></h5>
                                             <p align="left"
                                                style="font-family:Helvetica,Arial,sans-serif;font-size:15px;line-height:23px;margin-top:16px;margin-bottom:24px">
-                                                Hello <?php echo strstr($name . " ", " ", true); ?>,</p>
+                                                Hello <?php echo strstr(esc_attr($name) . " ", " ", true); ?>,</p>
                                             <p align="left"
                                                style="font-family:Helvetica,Arial,sans-serif;font-size:15px;line-height:23px;margin-top:16px;margin-bottom:24px">
-                                                <?php echo $sitemessage; ?></p>
+                                                <?php echo esc_attr($sitemessage); ?></p>
                                             <p
                                                     style="font-family:Helvetica,Arial,sans-serif;font-size:15px;line-height:23px;margin-top:16px;margin-bottom:24px">
                                                 &nbsp; </p>
@@ -1698,8 +1698,8 @@ function spg_wp_siliconpay_send_receipt($id, $currency, $amount, $name, $email, 
                                                     style="font-family:Helvetica,Arial,sans-serif;font-size:15px;line-height:23px;margin-top:8px;margin-bottom:16px">
                                                 Amount <strong>
                                                     :
-                                                    <?php echo $currency . ' ' . number_format($amount); ?></strong><br>
-                                                Email <strong> : <?php echo $user_email; ?></strong><br>
+                                                    <?php echo esc_attr($currency) . ' ' . esc_attr(number_format($amount)); ?></strong><br>
+                                                Email <strong> : <?php echo esc_attr($user_email); ?></strong><br>
                                                 <?php
                                                 $new = json_decode($metadata);
                                                 if (array_key_exists("0", $new)) {

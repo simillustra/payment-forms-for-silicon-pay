@@ -3,7 +3,7 @@ Contributors: siliconpay, @S.A.V.I.O.U.R
 Donate link: https://siliconpay.com/demo
 Tags: siliconpay, payments, uganda, mastercard, visa, target, UGX, subscription, verve, donation, church, NGO, form, contact form 7, form
 Requires at least: 3.1
-Tested up to: 5.8
+Tested up to: 5.9
 Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
